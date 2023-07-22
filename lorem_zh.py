@@ -6,20 +6,23 @@ class lorem_zh:
             self.seed_punc = "，，，，，，，、、；；。。。。：：！？"
 
         def fromen(self,text): # 从英文生成（空格分词就行）
-            output=text.split(" ")
+            output=" \n ".join(text.split("\n")).split(" ")
             i=0
             I=random.randint(2,15)  # 标点间距
             J=len(output)
             for j,s in enumerate(output):
                 if not re.match(r'xx\d\d|\n',s):  # 将想保留的语句提前替换成"xx\d\d"的形式，以便生成后再替换回来。
-                    output[j]=random.choice(self.seed) # 随机选词
+                    output[j]=random.choice(self.seed) # 随机选词！
                     i=i+1
-                if i>=I and j<J-1: # 加标点
+            
+                if s=="\n" : # 段末句号
+                    output[j]='。\n'
+                    i=0  
+                elif i>=I and j<J-1 and output[j+1]!="\n": # 加标点
                     output[j]=output[j]+random.choice(self.seed_punc) 
                     i=0
                     I=random.randint(1,10)
-                elif j==J-1: # 段末句号
-                    output[j]=output[j]+'。'
+                elif j==J-1: output[j]=output[j]+'。\n'      
             
             return "".join(output)
         
@@ -30,33 +33,24 @@ class lorem_zh:
             I=random.randint(2,15)  # 标点间距
             J=random.randint(100,300) # 分段间距
             while len(output)<=num:
-                output=output+random.choice(self.seed) # 随机选词
-                i+=1
-                j+=1
-                if i>=I:
+                output=output+random.choice(self.seed) # 随机选词！
+                if i>=I and j<J: # 该加标点了，且未到分段处 
                     output=output+random.choice(self.seed_punc) # 加标点
                     i=0
                     I=random.randint(1,15)
-                if multipars and j>=J:
-                    if i==0: # 段末句号
-                        output=output.rstrip(output[-1])+"。"
-                    else:
-                        output=output+"。"
-                    output=output+'\n'
-                    j=0
+                if (multipars and j>=J) or len(output)>=num: # 该分段了，或者生成结束了
+                    output=output+"。\n" # 分段&段末句号
+                    i=j=0
                     J=random.randint(100,300)
-            
-            if i==0: # 段末句号
-                output=output.rstrip(output[-1])+"。"
-            else:
-                output=output+"。"
+                i+=1
+                if multipars: j+=1
             
             return output
         
 if __name__=="__main__":
     lrm_zh=lorem_zh()
-    print(lrm_zh.fromen("never gonna let you down \n never gonna make you cry".replace("gonna","xx01")).replace("xx01","gonna"))
-    # print(lrm_zh.bynum(200),'\n')
-    # print(lrm_zh.bynum(1000,multipars=1),'\n')
+    print(lrm_zh.fromen("never gonna let you down\n never gonna make you cry".replace("gonna","xx01")).replace("xx01","gonna"))
+    print(lrm_zh.bynum(200))
+    print(lrm_zh.bynum(1000,multipars=1))
     
              
