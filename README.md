@@ -6,14 +6,17 @@
 ![image](https://github.com/DertahSama/zh_lorem_python/assets/74524914/5123d92e-4814-4438-b05f-432d265265c1)
 
 # 实现
-从《现代汉语语料词频表》
-- <http://www.moe.gov.cn/jyb_sjzl/ziliao/A19/201001/t20100115_75693.html>，或
-- <http://corpus.zhonghuayuwen.org/Resources.aspx>
+从《现代汉语语料词频表（教育部，2005）》
+- <http://www.moe.gov.cn/jyb_sjzl/ziliao/A19/201001/t20100115_75693.html>
+- 或<http://corpus.zhonghuayuwen.org/Resources.aspx>
 
-中的前500个中随机选词组成句子，并在随机位置插入标点符号和分段符号。
+的前500个词中，随机选词组成句子，并在随机位置插入标点符号和分段符号。
+
+（吐槽一下，这官方语料库生成出来的假文都好官腔……）
 
 # 使用例
-`.bynum()`方法生成一段给定字数的中文假文；而`.fromen()`则根据给定空格分割文本生成中文假文，并且支持保留原文中的语句。
+- `.bynum()`方法生成一段给定字数的中文假文；
+- `.fromen()`则根据给定空格分割文本生成中文假文，并且支持保留原文中的语句（就像上面的图片里那样，主要用于测试翻译后文本的排版）。
 ```python
 lrm_zh=lorem_zh()
 print(lrm_zh.bynum(200),'\n')
