@@ -6,42 +6,44 @@ class lorem_zh:
             self.seed_punc = "，，，，，，，、、；；。。。。：：！？"
 
         def fromen(self,text): # 从英文生成（空格分词就行）
-            output=" \n ".join(text.split("\n")).split(" ")
+            words=text.replace("\n"," \n ").split(" ")
             i=0
-            I=random.randint(2,15)  # 标点间距
-            J=len(output)
-            for j,s in enumerate(output):
+            resetI=lambda: random.randint(2,15)  # 标点间距
+            I=resetI()  
+            J=len(words)
+            for j,s in enumerate(words):
                 if not re.match(r'xx\d\d|\n',s):  # 将想保留的语句提前替换成"xx\d\d"的形式，以便生成后再替换回来。
-                    output[j]=random.choice(self.seed) # 随机选词！
+                    words[j]=random.choice(self.seed) # 随机选词
                     i=i+1
             
                 if s=="\n" : # 段末句号
-                    output[j]='。\n'
+                    words[j]='。\n'
                     i=0  
-                elif i>=I and j<J-1 and output[j+1]!="\n": # 加标点
-                    output[j]=output[j]+random.choice(self.seed_punc) 
+                elif i>=I and j<J-1 and words[j+1]!="\n": # 加标点
+                    words[j]=words[j]+random.choice(self.seed_punc) 
                     i=0
-                    I=random.randint(1,10)
-                elif j==J-1: output[j]=output[j]+'。\n'      
+                    I=resetI()
+                elif j==J-1: words[j]=words[j]+'。\n'      
             
-            return "".join(output)
+            return "".join(words)
         
         def bynum(self,num,multipars=False):
             output=""
-            i=0
-            j=0
-            I=random.randint(2,15)  # 标点间距
-            J=random.randint(100,300) # 分段间距
+            i=j=0
+            resetI=lambda: random.randint(2,15)  # 标点间距
+            resetJ=lambda: random.randint(100,300)  # 分段间距
+            I=resetI()
+            J=resetJ()
             while len(output)<=num:
-                output=output+random.choice(self.seed) # 随机选词！
-                if i>=I and j<J: # 该加标点了，且未到分段处 
+                output=output+random.choice(self.seed) # 随机选词
+                if i>=I and len(output)<num-1 and j<J-1 : # 该加标点了，且未到结尾/分段处 
                     output=output+random.choice(self.seed_punc) # 加标点
                     i=0
-                    I=random.randint(1,15)
+                    I=resetI()
                 if (multipars and j>=J) or len(output)>=num: # 该分段了，或者生成结束了
                     output=output+"。\n" # 分段&段末句号
                     i=j=0
-                    J=random.randint(100,300)
+                    J=resetJ()
                 i+=1
                 if multipars: j+=1
             
